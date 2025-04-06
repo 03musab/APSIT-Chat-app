@@ -45,6 +45,19 @@ const ChannelInner = ({ setIsEditing }) => {
 const TeamChannelHeader = ({ setIsEditing }) => {
     const { channel, watcher_count } = useChannelStateContext();
     const { client } = useChatContext();
+
+    const handleDeleteDirectMessage = async () => {
+      const confirmation = window.confirm("Are you sure you want to delete this chat? This action cannot be undone.");
+      
+      if (confirmation) {
+        try {
+          await channel.delete();
+          window.location.reload();
+        } catch (error) {
+          console.log('Error deleting the channel:', error);
+        }
+      }
+    };
   
     const MessagingHeader = () => {
       const members = Object.values(channel.state.members).filter(({ user }) => user.id !== client.userID);
@@ -61,6 +74,22 @@ const TeamChannelHeader = ({ setIsEditing }) => {
             ))}
   
             {additionalMembers > 0 && <p className='team-channel-header__name user'>and {additionalMembers} more</p>}
+            
+            <button 
+              onClick={handleDeleteDirectMessage}
+              style={{
+                backgroundColor: '#E74C3C',
+                color: 'white',
+                padding: '5px 10px',
+                borderRadius: '4px',
+                border: 'none',
+                marginLeft: '10px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+            >
+              Delete Chat
+            </button>
           </div>
         );
       }

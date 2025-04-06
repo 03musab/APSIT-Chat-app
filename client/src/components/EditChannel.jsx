@@ -43,6 +43,18 @@ const EditChannel = ({ setIsEditing }) => {
         setSelectedUsers([]);
     }
 
+    const handleDeleteChannel = async () => {
+        if(window.confirm("Are you sure you want to delete this channel? This action cannot be undone.")) {
+            try {
+                await channel.delete();
+                // Reload the page after successful deletion
+                window.location.reload();
+            } catch (error) {
+                console.error("Channel deletion failed", error);
+            }
+        }
+    }
+
     return (
         <div className="edit-channel__container">
             <div className="edit-channel__header">
@@ -53,6 +65,13 @@ const EditChannel = ({ setIsEditing }) => {
             <UserList setSelectedUsers={setSelectedUsers} />
             <div className="edit-channel__button-wrapper" onClick={updateChannel}>
                 <p>Save Changes</p>
+            </div>
+            <div 
+                className="edit-channel__button-wrapper" 
+                onClick={handleDeleteChannel}
+                style={{ marginTop: '10px', backgroundColor: '#E74C3C', cursor: 'pointer' }}
+            >
+                <p>Delete Channel</p>
             </div>
         </div>
     )

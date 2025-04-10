@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import CryptoJS from 'crypto-js';
 import { useChatContext } from 'stream-chat-react';
 
+
 // Set this in your environment variables (REACT_APP_ENCRYPTION_KEY)
 const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_KEY || 'default-strong-key-123!@#';
 
@@ -19,55 +20,75 @@ const EncryptedChatContainer = () => {
         textEncryptionWorking: false,
         fileEncryptionWorking: false,
         ivsUnique: false,
-        tamperProof: false
+        tamperProof: false,
     });
     const [isSecurityConsoleOpen, setIsSecurityConsoleOpen] = useState(false);
-    const [isUserListOpen, setIsUserListOpen] = useState(false); // New state for toggling user list
+    const [isUserListOpen, setIsUserListOpen] = useState(false);
+    const [encryptionEnabled, setEncryptionEnabled] = useState(true);
+    const [isRunningTests, setIsRunningTests] = useState(false); // For loading indicator
+
+    // Toggle encryption and update security status
+    const toggleEncryption = () => {
+        setEncryptionEnabled((prev) => !prev);
+    };
+
+    // Update security status dynamically when encryption is toggled
+    useEffect(() => {
+        setSecurityStatus({
+            usingSecureKey: encryptionEnabled && !SECRET_KEY.includes('default'),
+            textEncryptionWorking: encryptionEnabled,
+            fileEncryptionWorking: encryptionEnabled,
+            ivsUnique: encryptionEnabled,
+            tamperProof: encryptionEnabled,
+        });
+    }, [encryptionEnabled]);
 
     // Enhanced encryption with IV
     const encryptData = useCallback((data) => {
+        if (!encryptionEnabled) {
+            return {
+                iv: null,
+                content: data,
+                isEncrypted: false,
+                timestamp: Date.now(),
+            };
+        }
+
         try {
             const iv = CryptoJS.lib.WordArray.random(128 / 8);
             const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY, {
                 iv: iv,
                 padding: CryptoJS.pad.Pkcs7,
-                mode: CryptoJS.mode.CBC
+                mode: CryptoJS.mode.CBC,
             });
             return {
                 iv: iv.toString(),
                 content: encrypted.toString(),
                 isEncrypted: true,
-                timestamp: Date.now()
+                timestamp: Date.now(),
             };
         } catch (error) {
             console.error('Encryption error:', error);
             return null;
         }
-    }, []);
+    }, [encryptionEnabled]);
 
     // Enhanced decryption with error handling
     const decryptData = useCallback((encryptedObj) => {
-        try {
-            if (!encryptedObj) return null;
-            if (typeof encryptedObj === 'string') return encryptedObj;
-            
-            if (!encryptedObj.isEncrypted) {
-                return encryptedObj.content || encryptedObj;
-            }
+        if (!encryptionEnabled || !encryptedObj.isEncrypted) {
+            return encryptedObj.content || encryptedObj;
+        }
 
+        try {
             if (!encryptedObj.iv || !encryptedObj.content) {
                 return '**INVALID ENCRYPTION FORMAT**';
             }
 
-            const bytes = CryptoJS.AES.decrypt(
-                encryptedObj.content,
-                SECRET_KEY,
-                {
-                    iv: CryptoJS.enc.Hex.parse(encryptedObj.iv),
-                    padding: CryptoJS.pad.Pkcs7,
-                    mode: CryptoJS.mode.CBC
-                }
-            );
+            const bytes = CryptoJS.AES.decrypt(encryptedObj.content, SECRET_KEY, {
+                iv: CryptoJS.enc.Hex.parse(encryptedObj.iv),
+                padding: CryptoJS.pad.Pkcs7,
+                mode: CryptoJS.mode.CBC,
+            });
 
             const decrypted = bytes.toString(CryptoJS.enc.Utf8);
             if (!decrypted) return '**DECRYPTION FAILED**';
@@ -81,7 +102,7 @@ const EncryptedChatContainer = () => {
             console.error('Decryption error:', error);
             return '**DECRYPTION ERROR**';
         }
-    }, []);
+    }, [encryptionEnabled]);
 
     // Encrypt file content
     const encryptFileContent = useCallback(async (file) => {
@@ -172,31 +193,34 @@ const EncryptedChatContainer = () => {
 
     // Run comprehensive security tests
     const verifySecurity = useCallback(async () => {
+        setIsRunningTests(true); // Show loading indicator
         const testMessage = "SECURITY_TEST_" + Math.random().toString(36).substring(2);
-        const encryptedText = encryptData(testMessage);
-        const decryptedText = decryptData(encryptedText);
-        const textEncryptionWorking = testMessage === decryptedText;
+        const encryptedText = encryptionEnabled ? encryptData(testMessage) : null;
+        const decryptedText = encryptedText ? decryptData(encryptedText) : null;
+        const textEncryptionWorking = encryptionEnabled && testMessage === decryptedText;
 
         const testFile = new File(["TEST FILE CONTENT"], "test.txt", { type: "text/plain" });
-        const encryptedFile = await encryptFileContent(testFile);
-        const decryptedFile = await decryptFileContent(encryptedFile);
-        const fileEncryptionWorking = decryptedFile instanceof Blob;
+        const encryptedFile = encryptionEnabled ? await encryptFileContent(testFile) : null;
+        const decryptedFile = encryptedFile ? await decryptFileContent(encryptedFile) : null;
+        const fileEncryptionWorking = encryptionEnabled && decryptedFile instanceof Blob;
 
-        const msg1 = encryptData("test1");
-        const msg2 = encryptData("test2");
-        const ivsUnique = msg1.iv !== msg2.iv;
+        const msg1 = encryptionEnabled ? encryptData("test1") : null;
+        const msg2 = encryptionEnabled ? encryptData("test2") : null;
+        const ivsUnique = encryptionEnabled && msg1?.iv !== msg2?.iv;
 
-        const tampered = { ...msg1, content: msg1.content + "x" };
-        const tamperProof = decryptData(tampered).includes("DECRYPTION ERROR");
+        const tampered = encryptionEnabled ? { ...msg1, content: msg1.content + "x" } : null;
+        const tamperProof = encryptionEnabled && decryptData(tampered)?.includes("DECRYPTION ERROR");
 
         setSecurityStatus({
-            usingSecureKey: !SECRET_KEY.includes('default'),
+            usingSecureKey: encryptionEnabled && !SECRET_KEY.includes('default'),
             textEncryptionWorking,
             fileEncryptionWorking,
             ivsUnique,
             tamperProof
         });
-    }, [encryptData, decryptData, encryptFileContent, decryptFileContent]);
+
+        setTimeout(() => setIsRunningTests(false), 1000); // Hide loading indicator after 1 second
+    }, [encryptData, decryptData, encryptFileContent, decryptFileContent, encryptionEnabled]);
 
     // Initialize security checks and message listener
     useEffect(() => {
@@ -232,7 +256,21 @@ const EncryptedChatContainer = () => {
         };
     }, [channel, decryptData, fetchUsers, verifySecurity]);
 
+    useEffect(() => {
+        setMessages((prevMessages) =>
+            prevMessages.map((msg) => ({
+                ...msg,
+                isEncrypted: encryptionEnabled,
+            }))
+        );
+    }, [encryptionEnabled]);
+
     const sendMessage = async () => {
+        if (!selectedUser) {
+            alert('Please select a user first to send the message.'); // Replace with a toast if needed
+            return;
+        }
+
         if (!input.trim() && !file) return;
         if (!channel) {
             alert('No active chat channel');
@@ -326,6 +364,12 @@ const EncryptedChatContainer = () => {
         <div className="encrypted-chat">
             <div className="chat-header">
                 <h3>Secure Chat <span className="encryption-status">🔐</span></h3>
+                <button
+                    onClick={toggleEncryption}
+                    className="toggle-encryption-btn"
+                >
+                    {encryptionEnabled ? 'Disable Encryption' : 'Enable Encryption'}
+                </button>
                 <button 
                     onClick={() => setIsUserListOpen(!isUserListOpen)} 
                     className="toggle-userlist-btn"
@@ -362,10 +406,9 @@ const EncryptedChatContainer = () => {
                             <p>✉️ {securityStatus.textEncryptionWorking ? '✅ Text Encryption' : '❌ Text Encryption'}</p>
                             <p>📁 {securityStatus.fileEncryptionWorking ? '✅ File Encryption' : '❌ File Encryption'}</p>
                             <p>🔄 {securityStatus.ivsUnique ? '✅ Unique IVs' : '❌ IVs Not Unique'}</p>
-                            <p>🛡️ {securityStatus.tamperProof ? '✅ Tamper Proof' : '❌ Tamper Detection'}</p>
                         </div>
-                        <button onClick={verifySecurity} className="test-button">
-                            Run Security Tests
+                        <button onClick={verifySecurity} className="test-button" disabled={isRunningTests}>
+                            {isRunningTests ? 'Running Tests...' : 'Run Security Tests'}
                         </button>
                     </div>
                 )}

@@ -51,9 +51,23 @@ const EditChannel = ({ setIsEditing }) => {
                 window.location.reload();
             } catch (error) {
                 console.error("Channel deletion failed", error);
+                window.alert("An error occurred while deleting the chat. Please try again [ADMIN ONLY].");
+
             }
         }
     }
+
+    const handleClearChat = async () => {
+        if (window.confirm("Are you sure you want to clear all messages in this channel? This action cannot be undone.")) {
+            try {
+                await channel.truncate(); // Clears all messages in the channel
+                window.alert("All messages in the channel have been cleared.");
+            } catch (error) {
+                console.error("Failed to clear the chat", error);
+                window.alert("An error occurred while clearing the chat. Please try again [ADMIN ONLY].");
+            }
+        }
+    };
 
     return (
         <div className="edit-channel__container">
@@ -72,6 +86,13 @@ const EditChannel = ({ setIsEditing }) => {
                 style={{ marginTop: '10px', backgroundColor: '#E74C3C', cursor: 'pointer' }}
             >
                 <p>Delete Channel</p>
+            </div>
+            <div 
+                className="edit-channel__button-wrapper" 
+                onClick={handleClearChat}
+                style={{ marginTop: '10px', backgroundColor: '#3498DB', cursor: 'pointer' }}
+            >
+                <p>Clear Chat</p>
             </div>
         </div>
     )

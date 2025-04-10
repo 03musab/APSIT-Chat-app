@@ -58,6 +58,19 @@ const TeamChannelHeader = ({ setIsEditing }) => {
         }
       }
     };
+
+    const handleClearChat = async () => {
+      const confirmation = window.confirm("Are you sure you want to clear this chat? This action cannot be undone.");
+      
+      if (confirmation) {
+        try {
+          await channel.truncate(); // Clears all messages in the channel
+          window.alert("Chat has been cleared successfully.");
+        } catch (error) {
+          console.log('Error clearing the chat:', error);
+        }
+      }
+    };
   
     const MessagingHeader = () => {
       const members = Object.values(channel.state.members).filter(({ user }) => user.id !== client.userID);
@@ -89,6 +102,22 @@ const TeamChannelHeader = ({ setIsEditing }) => {
               }}
             >
               Delete Chat
+            </button>
+
+            <button 
+              onClick={handleClearChat}
+              style={{
+                backgroundColor: '#3498DB',
+                color: 'white',
+                padding: '5px 10px',
+                borderRadius: '4px',
+                border: 'none',
+                marginLeft: '10px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+            >
+              Clear Chat
             </button>
           </div>
         );

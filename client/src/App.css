@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap');
+
 :root {
     --primary-color: #005fff;
     --primary-color-alpha: #005fff1a;
@@ -14,14 +16,108 @@
     color: #333;
   }
   
+  
   #root {
     height: 100%;
   }
   
   .auth__form-container {
-    min-height: 100vh;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .auth__form {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .auth__form-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .auth__form-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .auth__form-input {
+    width: 100%;
+    margin-bottom: 1.2rem;
+  }
+  
+  .auth__form-input label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .auth__form-input input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: 0.3s ease;
+  }
+  
+  .auth__form-input input:focus {
+    border-color: #764ba2;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+  }
+  
+  .auth__form-button {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .auth__form-button button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #764ba2;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .auth__form-button button:hover {
+    background-color: #5b3b8c;
+  }
+  
+  .auth__form-account {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .auth__form-account span {
+    color: #764ba2;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    transition: 0.2s;
+  }
+  
+  .auth__form-account span:hover {
+    text-decoration: underline;
   }
   
   .auth__form-container_fields {
@@ -955,16 +1051,18 @@
   }
   
   .team-channel-list__header {
-    padding: 0 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%; /* Added to ensure it spans the full width */
   }
   
   .team-channel-list__header svg {
     cursor: pointer;
     position: relative;
-    left: auto; /* Adjust the value as needed to move it further to the right */
+    left: 35px; /* Adjust the value as needed to move it further to the right */
+    width: 39px; /* Fixed width */
+    height: 20px; /* Fixed height */
   }
   
   .team-channel-list__header__title {
@@ -975,6 +1073,8 @@
     color: rgb(255, 255, 255);
     margin-bottom: 10px;
     padding: 4px 0;
+    width: 190px; /* Added to ensure it spans the full width */
+
   }
   
   .channel-preview__wrapper {
@@ -2182,14 +2282,50 @@
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     border-right: 1px solid #d0d0d0;
 }
-
 .sidebar__header {
-    font-size: 1.8em;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #fff;
+  font-size: 5em; /* Slightly larger for more grandeur */
+  font-weight: 900; /* Keeps it bold but slightly more refined */
+  text-align: center;
+  margin-bottom: 50px; /* More spacious separation */
+  text-transform: uppercase;
+  letter-spacing: 8px; /* A touch more luxury */
+  color: #fff;
+
+  /* Smooth, fluid gradient effect */
+  background: linear-gradient(270deg,
+    #ff0000,
+    #73ff00,
+    #e100ff,
+    #e1ff00,
+    #1e00ff
+  );
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5); /* Soft depth instead of harsh shadow */
+
+  animation: gradientFlow 11s ease-in-out infinite;
+  transition: transform 9s ease;
 }
+
+.sidebar__header:hover {
+  transform: scale(3.05); /* Subtle hover scale effect */
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .sidebar__logo {
   width: 40px; /* Adjust the size of the logo */
   height: 40px;
@@ -2266,6 +2402,7 @@
     overflow-y: auto;
     padding: 2rem;
     background: #f9f9f9;
+    width: 100%; /* Ensure consistent width */
 }
 
 .channel-list__container {
@@ -2566,4 +2703,192 @@
   font-size: 0.85rem; /* Slightly smaller font size */
   color: #ffffff;
   margin: 0;
+}
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 2rem;
+}
+
+.auth-page__content {
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.auth-page__info {
+  flex: 1;
+  background: #f4f4f4;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #333;
+}
+
+.auth-page__info h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.auth-page__info p {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.auth-page__form {
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth__form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.auth__form-input {
+  margin-bottom: 1.2rem;
+}
+
+.auth__form-input input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.auth__form-input input:focus {
+  border-color: #764ba2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+}
+
+.auth__form-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth__form-checkbox input {
+  margin-right: 0.5rem;
+}
+
+.auth__form-button button {
+  width: 100%;
+  background-color: #764ba2;
+  color: white;
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.auth__form-button button:hover {
+  background-color: #5b3b8c;
+}
+
+.auth__form-account {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.auth__form-account span {
+  color: #764ba2;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: 0.2s;
+}
+
+.auth__form-account span:hover {
+  text-decoration: underline;
+}
+
+.auth__form-social {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.auth__form-social-icons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.auth__form-social-icons i {
+  font-size: 1.5rem;
+  color: #555;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth__form-social-icons i:hover {
+  color: #764ba2;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .auth-page__content {
+    flex-direction: column;
+  }
+
+  .auth-page__info {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .auth-page__form {
+    padding: 2rem;
+  }
+}
+
+/* Encryption Toggle Button */
+.toggle-encryption-btn {
+  background-color: #4a90e2;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.toggle-encryption-btn:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+.toggle-encryption-btn:active {
+    transform: scale(0.95); /* Slight shrink effect on click */
+}
+
+.toggle-encryption-btn.disable {
+    background-color: #f44336; /* Red for "Disable Encryption" */
+}
+
+.toggle-encryption-btn.disable:hover {
+    background-color: #e53935; /* Slightly darker red on hover */
 }

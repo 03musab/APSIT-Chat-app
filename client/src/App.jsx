@@ -157,7 +157,7 @@ const App = () => {
 
 <div className="sidebar__header">
   <img src={logo} alt="Logo" className="sidebar__logo" />
-  APSIT Chat
+  APSIT Connect
 </div>
 
             {/* Profile Section */}

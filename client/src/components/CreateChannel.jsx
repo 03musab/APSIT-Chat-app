@@ -29,18 +29,31 @@ const CreateChannel = ({ createType, setIsCreating }) => {
         e.preventDefault();
 
         try {
-            const newChannel = await client.channel(createType, channelName, {
-                name: channelName, members: selectedUsers
+            // Generate a unique ID for the channel if no name is provided
+            const channelId = channelName || `${createType}-${Date.now()}`;
+
+            // Create a new channel
+            const newChannel = await client.channel(createType, channelId, {
+                name: channelName || 'New Group',
+                members: selectedUsers,
             });
 
             await newChannel.watch();
 
+            // Reset state and close the creation modal
             setChannelName('');
             setIsCreating(false);
             setSelectedUsers([client.userID]);
             setActiveChannel(newChannel);
         } catch (error) {
-            console.log(error);
+            console.error("Error creating the channel:", error);
+
+            // Handle permission errors gracefully
+            if (error.code === 17) {
+                window.alert("You do not have permission to create this channel. Please contact an administrator.");
+            } else {
+                window.alert("An error occurred while creating the channel. Please try again.");
+            }
         }
     }
 

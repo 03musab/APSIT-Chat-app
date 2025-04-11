@@ -2372,7 +2372,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .sidebar__logout-button {
-  margin-top: auto;
   padding: 12px 18px;
   background: linear-gradient(90deg, #00bbff 0%, #00bbff 100%);
   color: white;
@@ -2390,9 +2389,14 @@
 }
 
 .channel-list {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 0 1rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0 1rem;
+  max-height: 300px; /* Increased the height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Disable horizontal scrolling */
+  scrollbar-width: thin; /* For modern browsers */
+  scrollbar-color: #ccc transparent; /* Custom scrollbar colors */
 }
 
 .main-content {

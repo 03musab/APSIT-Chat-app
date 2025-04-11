@@ -38,7 +38,9 @@ const TeamChannelList = ({ setToggleContainer, children, error = false, loading,
                     setToggleContainer={setToggleContainer}
                 />
             </div>
-            {children}
+            <div className="team-channel-list__content">
+                {children}
+            </div>
         </div>
     )
 }

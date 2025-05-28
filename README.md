@@ -5,7 +5,7 @@
 ![APSIT Chat Demo](https://via.placeholder.com/800x400/6366F1/FFFFFF?text=APSIT+Chat+App+Demo)
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-6366F1?style=for-the-badge&logo=vercel)](https://apsit-chat-frontend.onrender.com)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/your-username/apsit-chat-app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/03musab/apsit-chat-app)
 
 ## 🚀 Features
 

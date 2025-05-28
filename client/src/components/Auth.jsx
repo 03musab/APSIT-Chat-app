@@ -26,24 +26,47 @@ const Auth = () => {
 
         const { username, password, phoneNumber, avatarURL } = form;
 
-        const URL = 'http://localhost:5000/auth';
+        // Regex for password: At least 8 characters, one uppercase, one lowercase, one number, and one special character
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-        const { data: { token, userId, hashedPassword, fullName } } = await axios.post(`${URL}/${isSignup ? 'signup' : 'login'}`, {
-            username, password, fullName: form.fullName, phoneNumber, avatarURL,
-        });
-
-        cookies.set('token', token);
-        cookies.set('username', username);
-        cookies.set('fullName', fullName);
-        cookies.set('userId', userId);
+        // Regex for phone number: 10 digits only
+        const phoneNumberRegex = /^\d{10}$/;
 
         if (isSignup) {
-            cookies.set('phoneNumber', phoneNumber);
-            cookies.set('avatarURL', avatarURL);
-            cookies.set('hashedPassword', hashedPassword);
+            if (!passwordRegex.test(password)) {
+                window.alert("Password must be at least 8 characters long, include one uppercase letter, one lowercase letter, one number, and one special character.");
+                return;
+            }
+
+            if (!phoneNumberRegex.test(phoneNumber)) {
+                window.alert("Phone number must be exactly 10 digits.");
+                return;
+            }
         }
 
-        window.location.reload();
+        const URL = 'http://localhost:5000/auth';
+
+        try {
+            const { data: { token, userId, hashedPassword, fullName } } = await axios.post(`${URL}/${isSignup ? 'signup' : 'login'}`, {
+                username, password, fullName: form.fullName, phoneNumber, avatarURL,
+            });
+
+            cookies.set('token', token);
+            cookies.set('username', username);
+            cookies.set('fullName', fullName);
+            cookies.set('userId', userId);
+
+            if (isSignup) {
+                cookies.set('phoneNumber', phoneNumber);
+                cookies.set('avatarURL', avatarURL);
+                cookies.set('hashedPassword', hashedPassword);
+            }
+
+            window.location.reload();
+        } catch (error) {
+            console.error("Error during authentication:", error);
+            window.alert("An error occurred. Please try again.");
+        }
     };
 
     const switchMode = () => {
